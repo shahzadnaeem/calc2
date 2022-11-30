@@ -13,6 +13,7 @@
   $ dotnet new globaljson --sdk-version 6.0.403
 
   # NOTE: Make sure that you have the CORRECT <TargetFramework> in ALL your .csproj files
+  #       Only an issue if you have been messing about with earlier versions as above!
   ```
 
 ### Create a solution
@@ -31,22 +32,12 @@
 
 ## Create Projects
 
-### CalcLib
-
   ```sh
   $ dotnet new classlib -o src/CalcLib
-  ```
-
-### Calc
-
-  ```sh
   $ dotnet new console -o src/Calc
-  ```
-
-### CalcTest
-
-  ```sh
   $ dotnet new xunit -o tests/Calc.Test
+
+  # We have three
   ```
 
 ## Update Solution
