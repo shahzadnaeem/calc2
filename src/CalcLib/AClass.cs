@@ -1,19 +1,19 @@
 ﻿namespace CalcLib;
 
-public class Calc
+public class AClass
 {
     public string Name { get; set; }
     public Guid Id { get; }
     public bool AutoId { get; } = false;
 
-    public Calc(string name)
+    public AClass(string name)
     {
         Name = name;
         Id = System.Guid.NewGuid();
         AutoId = true;
     }
 
-    public Calc(string name, Guid id)
+    public AClass(string name, Guid id)
     {
         Name = name;
         Id = id;

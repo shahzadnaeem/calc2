@@ -3,14 +3,14 @@ using Xunit;
 
 namespace Calc.Test;
 
-public class CalcTests
+public class AClassTests
 {
     [Fact]
     public void CanConstuctWithJustName()
     {
         const string Name = "Meee!";
 
-        var calc = new CalcLib.Calc(Name);
+        var calc = new CalcLib.AClass(Name);
 
         Assert.Equal(Name, calc.Name);
         Assert.True(calc.AutoId);
@@ -25,7 +25,7 @@ public class CalcTests
         const string Name = "Meee!";
         Guid AGuid = Guid.Empty;
 
-        var calc = new CalcLib.Calc(Name, AGuid);
+        var calc = new CalcLib.AClass(Name, AGuid);
 
         Assert.Equal(Name, calc.Name);
         Assert.False(calc.AutoId);
@@ -39,7 +39,7 @@ public class CalcTests
     {
         const string Name = "Meee!";
 
-        var calc = new CalcLib.Calc(Name);
+        var calc = new CalcLib.AClass(Name);
 
         var toString = calc.ToString();
 

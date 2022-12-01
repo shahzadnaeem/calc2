@@ -1,7 +1,7 @@
 ﻿// using System;
 using CalcLib;
 
-var calc = new Calc("Meeee");
+var calc = new AClass("Meeee");
 
 Console.WriteLine("Hey!");
 Console.WriteLine($"calc={calc}");
