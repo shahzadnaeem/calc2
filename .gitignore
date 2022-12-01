@@ -10,12 +10,10 @@
 [Bb]in/
 [Oo]bj/
 TestResults/
+TestReport/
 logs/
 ImageFiles/
 Publish/
-
-# Test Coverage data
-MedicalLogApi.Tests/lcov.info
 
 # This happens sometimes in VS
 *.csproj.user

@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Calc.Test;
 
-public class UnitTest1
+public class CalcTests
 {
     [Fact]
     public void CanConstuctWithJustName()
@@ -32,5 +32,18 @@ public class UnitTest1
 
         var guid = calc.Id;
         Assert.Equal(AGuid, guid);
+    }
+
+    [Fact]
+    public void ToStringTest()
+    {
+        const string Name = "Meee!";
+
+        var calc = new CalcLib.Calc(Name);
+
+        var toString = calc.ToString();
+
+        Assert.Contains($"Name={Name}", toString);
+        Assert.Contains("AutoId=True", toString);
     }
 }
