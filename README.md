@@ -1,10 +1,10 @@
-# Expression Calcuator with Sprache
+# Expression Calcuator with Sprache (Template Project)
 
 ## .NET Setup
 
 ### global.json
 
-  [learn.microsoftr.com global-json](https://learn.microsoft.com/en-us/dotnet/core/tools/global-json)
+  [MS Learn:global-json](https://learn.microsoft.com/en-us/dotnet/core/tools/global-json)
 
   ```sh
   # Don't need a global.json as .NET 7.0 works with VScode/Omnisharp just fine
@@ -67,5 +67,6 @@ A Makefile has been added with the following targets:
 - run
 - test
 - Test Coverage (text and html generated, following select output shown)
+  - [MS Learn:Code Coverage](https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-code-coverage?tabs=linux)
   - coverage-report
   - coverage-report-html
