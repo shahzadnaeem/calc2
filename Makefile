@@ -12,8 +12,12 @@ COVERAGE_REPORTER=$(TEST_PROJECT)/scripts/createCoverageReport.sh
 
 .PHONY: build clean watch run test coverage coverage-report coverage-report-html
 
-build clean:
+build:
 	$(DOTNET) $@
+
+clean:
+	$(DOTNET) $@
+	rm -rf $(TEST_RESULTS) $(TEST_REPORT)
 
 watch run:
 	$(DOTNET) $@ --project $(PROJECT)
@@ -23,7 +27,7 @@ test:
 
 coverage:
 	rm -rf $(TEST_RESULTS)
-	$(DOTNET) test --collect "Xplat Code Coverage"
+	$(DOTNET) test $(TEST_PROJECT) --collect "Xplat Code Coverage"
 
 coverage-report: coverage
 	$(COVERAGE_REPORTER) $(TEST_PROJECT)
