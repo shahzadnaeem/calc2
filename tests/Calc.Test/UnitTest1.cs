@@ -10,7 +10,7 @@ public class UnitTest1
     {
         const string Name = "Meee!";
 
-        var calc = new CalcClass(Name);
+        var calc = new CalcLib.Calc(Name);
 
         Assert.Equal(Name, calc.Name);
         Assert.True(calc.AutoId);
@@ -25,7 +25,7 @@ public class UnitTest1
         const string Name = "Meee!";
         Guid AGuid = Guid.Empty;
 
-        var calc = new CalcClass(Name, AGuid);
+        var calc = new CalcLib.Calc(Name, AGuid);
 
         Assert.Equal(Name, calc.Name);
         Assert.False(calc.AutoId);

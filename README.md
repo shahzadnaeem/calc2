@@ -37,7 +37,14 @@
   $ dotnet new console -o src/Calc
   $ dotnet new xunit -o tests/Calc.Test
 
-  # We have three
+  # Now add references
+
+  $ cd src/Calc
+  $ dotnet add reference ../CalcLib/CalcLib.csproj
+
+  $ cd ../../tests/Calc.Test
+  $ dotnet add reference ../../src/CalcLib/CalcLib.csproj
+
   ```
 
 ## Update Solution
@@ -49,3 +56,13 @@
   # Add all projects - ensures many things, including VSCode/Omnisharp working
 
   ```
+
+## Running and Testing
+
+A Makefile has been added with the following targets:
+
+- build
+- clean
+- watch
+- run
+- test
