@@ -66,3 +66,6 @@ A Makefile has been added with the following targets:
 - watch
 - run
 - test
+- Test Coverage (text and html generated, following select output shown)
+  - coverage-report
+  - coverage-report-html
