@@ -1,5 +1,9 @@
 # Expression Calcuator with Sprache (Template Project)
 
+## References
+
+This is from [Sprache/samples](https://github.com/sprache/Sprache/blob/develop/samples/LinqyCalculator/ExpressionParser.cs)
+
 ## .NET Setup
 
 ### global.json
