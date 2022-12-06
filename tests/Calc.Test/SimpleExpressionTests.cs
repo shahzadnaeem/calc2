@@ -21,6 +21,16 @@ public class SimpleExpressionTests
     }
 
     [Theory]
+    [InlineData("2^3", 8)]
+    [InlineData("8^(1/3)", 2)]
+    public void PowerOperations(string expr, double expected)
+    {
+        var result = ExpressionParser.ParseExpression(expr).Compile()();
+
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
     [InlineData("1", 1)]
     [InlineData("-1", -1)]
     [InlineData("0", 0)]
@@ -37,6 +47,8 @@ public class SimpleExpressionTests
     [InlineData("Sin(PI)", 0)]
     [InlineData("Sin(PI/2)", 1.0)]
     [InlineData("Sin(PI/6)", 0.5)]
+    [InlineData("Cos(Tau)", 1.0)]
+    [InlineData("Sign(Tau)", 1.0)]
     public void Functions(string expr, double expected)
     {
         var result = ExpressionParser.ParseExpression(expr).Compile()();
@@ -47,6 +59,7 @@ public class SimpleExpressionTests
     [Theory]
     [InlineData("1+")]
     [InlineData("+1")]
+    [InlineData("2*(3+")]
     [InlineData("NOTACONSTANT")]
     [InlineData("NotAFunction(0)")]
     [InlineData("Sin(BADCONST)")]

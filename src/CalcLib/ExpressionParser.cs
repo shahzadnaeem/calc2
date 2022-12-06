@@ -41,7 +41,16 @@ public static class ExpressionParser
             throw new ParseException(string.Format("Function '{0}({1})' does not exist.", name,
                                                    string.Join(",", parameters.Select(e => e.Type.Name))));
 
-        return Expression.Call(methodInfo, parameters);
+        var returnType = methodInfo.ReturnType;
+
+        if (returnType == typeof(int) || returnType == typeof(bool))
+        {
+            return Expression.Convert(Expression.Call(methodInfo, parameters), typeof(double));
+        }
+        else
+        {
+            return Expression.Call(methodInfo, parameters);
+        }
     }
 
     // ========================================================================
