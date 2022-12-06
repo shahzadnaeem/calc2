@@ -121,8 +121,8 @@ rm -rf ${TARGET}/.git
 # Remove tools in TARGET
 rm -rf ${TARGET}/tools
 # Remove bin and obj dirs
-find ${TARGET} -name obj -exec rm -rf {} \; -prune
 find ${TARGET} -name bin -exec rm -rf {} \; -prune
+find ${TARGET} -name obj -exec rm -rf {} \; -prune
 
 (
     cd ${TARGET}
