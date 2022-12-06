@@ -10,7 +10,7 @@ TEST_REPORT=$(TEST_PROJECT)/TestReport
 DOTNET=dotnet
 COVERAGE_REPORTER=$(TEST_PROJECT)/scripts/createCoverageReport.sh
 
-.PHONY: build clean watch run test coverage coverage-report coverage-report-html
+.PHONY: build clean generated watch run test coverage coverage-report coverage-report-html
 
 build:
 	$(DOTNET) $@
@@ -18,6 +18,9 @@ build:
 clean:
 	$(DOTNET) $@
 	rm -rf $(TEST_RESULTS) $(TEST_REPORT)
+
+generated:
+	(find . -type d -a \( -name obj -o -name bin \) -exec ls -lR {} \;) | grep -E -e "net[0-9\.]+:"
 
 watch run:
 	$(DOTNET) $@ --project $(PROJECT)
