@@ -1,0 +1,75 @@
+#!/bin/bash
+
+# =============================================================================
+
+updateFile() {
+    FILE=${1}
+    SED_CMDS=${2}
+
+    sed -i -e "${SED_CMDS}" ${FILE}
+
+    echo "# Updated ${FILE}"
+}
+
+rename() {
+    FROM=${1}
+    TO=${2}
+
+    mv ${FROM} ${TO}
+
+    echo "# Renamed: ${FROM} -> ${TO}"
+}
+
+# =============================================================================
+
+SOURCE=Calc
+TARGET=Demo
+
+FILE="${SOURCE}/${SOURCE}.file"
+TARGET_FILE="${SOURCE}/${TARGET}.file"
+FINAL_FILE="${TARGET}/${TARGET}.file"
+
+SRC=Calc
+SRC_LC=calc
+
+rm -rf ${SOURCE} ${TARGET}
+mkdir ${SOURCE}
+
+cat >${FILE} <<EOF
+using CalcLib;
+
+var calc = new Calc("Meeee");
+
+Console.WriteLine("Hey!");
+Console.WriteLine($"calc={calc}");
+Console.WriteLine("See you later...");
+
+  # .csproj
+  <ItemGroup>
+    <ProjectReference Include="..\CalcLib\CalcLib.csproj" />
+  </ItemGroup>
+
+  # .sln
+  Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3C31EF65-5540-4245-B981-1D573EBBE8A1}"
+  EndProject
+  Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalcLib", "src\CalcLib\CalcLib.csproj", "{D966B364-BC43-461C-805A-F7721EAAFC23}"
+  EndProject
+  Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calc", "src\Calc\Calc.csproj", "{5DA33A92-19D6-481C-A599-834B70DF6E61}"
+  EndProject
+  Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{087E77D0-CA10-4039-A0DB-BAA1F4FE711D}"
+  EndProject
+  Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calc.Test", "tests\Calc.Test\Calc.Test.csproj", "{62577176-F3F3-46C2-A8C5-291A1FF681CD}"
+  EndProject
+
+EOF
+
+echo "# ${FILE} created - with Calc references"
+
+SED_CMDS="s/${SRC_LC}/obj/g; s/${SRC}/${TARGET}/g"
+
+updateFile ${FILE} "${SED_CMDS}"
+
+rename ${FILE} ${TARGET_FILE}
+rename ${SOURCE} ${TARGET}
+
+cat ${FINAL_FILE}
