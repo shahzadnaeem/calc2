@@ -70,7 +70,7 @@ startStage() {
     local NAME=${1}
 
     echo -e "\n# ==============================================="
-    echo -e "# Stage ${NAME}"
+    echo -e "# Stage ${NAME}\n"
 }
 
 showUpdateParams() {
