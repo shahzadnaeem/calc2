@@ -1,0 +1,240 @@
+#!/bin/bash
+
+# Usage:
+# From a directory outside this template repo
+#
+# $ path/to/tools/copyTo new-repo-name
+#
+# Copied repo will have clean .git and solution and projects will be updated
+
+set -o nounset  # Exit with an error when undefined variable is used
+set -o errexit  # Exit with an error if any command fails
+set -o errtrace # Propagate traps to functions and scripts
+
+#
+
+function mustHave {
+    typeset cmd=${1:-''}
+
+    which ${cmd} >/dev/null 2>&1
+
+    if [ $? -ne 0 ]; then
+        echo "ERROR: Must have '${cmd}' to proceed"
+        exit 1
+    fi
+}
+
+# Pre checks
+mustHave git
+
+# Parameters
+SCRIPT_DIR=$(dirname $0)
+REPO_ROOT=$(dirname $SCRIPT_DIR)
+
+if [[ $# -eq 2 ]]; then
+    REPO_ROOT=${1-''}
+    TARGET=${2:-''}
+    REPO_NAME=$(basename $TARGET)
+else
+    TARGET=${1:-''}
+    REPO_NAME=$(basename $TARGET)
+fi
+
+if [ ! "${REPO_ROOT}" ]; then
+    echo "ERROR: No source repo name provided!"
+    exit 1
+fi
+
+if [ ! "${TARGET}" ]; then
+    echo "ERROR: No target repo name provided!"
+    exit 1
+fi
+
+# Info
+echo ""
+echo "  HERE=${SCRIPT_DIR}"
+echo "  REPO_ROOT=${REPO_ROOT}"
+echo "  TARGET=${TARGET} ..."
+echo "  REPO_NAME=${REPO_NAME} ..."
+echo ""
+
+# Check for existing
+if [ -d "${TARGET}" ]; then
+    echo "ERROR: Target repo already exists - '${TARGET}'"
+    exit 1
+fi
+
+# =============================================================================
+
+startStage() {
+    local NAME=${1}
+
+    echo -e "\n# ==============================================="
+    echo -e "# Stage ${NAME}"
+}
+
+showUpdateParams() {
+    local FROM=${1}
+    local TO=${2}
+    local SED_CMDS=${3}
+    local EXTRA=${4:-}
+
+    echo -e "\n# ==============================================="
+    echo -e "# Stage ${FROM} -> ${TO}"
+    echo -e "#  sed: ${SED_CMDS}"
+    if [ "${EXTRA}" ]; then
+        echo -e "#  ${EXTRA}"
+    fi
+    echo ""
+}
+
+updateFile() {
+    local FILE=${1}
+    local SED_CMDS=${2}
+
+    sed -i -e "${SED_CMDS}" "${TARGET}/${FILE}"
+
+    echo "# Updated ${TARGET}/${FILE}"
+}
+
+rename() {
+    local FROM=${1}
+    local TO=${2}
+
+    mv ${TARGET}/${FROM} ${TARGET}/${TO}
+
+    echo "# Renamed: ${TARGET}: ${FROM} -> ${TO}"
+}
+
+# =============================================================================
+
+# Copy repo to target
+startStage "Copy ${REPO_ROOT} to ${TARGET}"
+
+cp -a ${REPO_ROOT} ${TARGET}
+
+# Git init
+startStage "Git initialisation"
+
+# Remove .git in TARGET
+rm -rf ${TARGET}/.git
+# Remove tools in TARGET
+rm -rf ${TARGET}/tools
+
+(
+    cd ${TARGET}
+    git init
+)
+
+# Update a number of things...
+
+startStage "Updates for ${TARGET}"
+
+FROM=Calc
+TO=${TARGET}
+
+# src/Calc
+FROM_LC=calc
+
+SRC_DIR="src/${FROM}"
+TGT_DIR="src/${TO}"
+SED_CMDS="s/${FROM_LC}/obj/g; s/${FROM}/${TO}/g"
+
+PROGRAM_CS="Program.cs"
+CSPROJ="${FROM}.csproj"
+NEW_CSPROJ="${TO}.csproj"
+
+showUpdateParams "${SRC_DIR}" "${TGT_DIR}" "${SED_CMDS}" "${PROGRAM_CS},${CSPROJ}->${NEW_CSPROJ}"
+
+updateFile "${SRC_DIR}/${PROGRAM_CS}" "${SED_CMDS}"
+updateFile "${SRC_DIR}/${CSPROJ}" "${SED_CMDS}"
+
+rename "${SRC_DIR}/${CSPROJ}" "${SRC_DIR}/${NEW_CSPROJ}"
+rename "${SRC_DIR}" "${TGT_DIR}"
+
+# src/CalcLib
+TO_LIB="${TARGET}Lib"
+FROM_LIB="${FROM}Lib"
+
+SRC_DIR="src/${FROM_LIB}"
+TGT_DIR="src/${TO_LIB}"
+SED_CMDS="s/${FROM}/${TO}/g"
+
+CLASS_CS="${FROM}.cs"
+NEW_CLASS_CS="${TARGET}.cs"
+CSPROJ="${FROM_LIB}.csproj"
+NEW_CSPROJ="${TO_LIB}.csproj"
+
+showUpdateParams "${SRC_DIR}" "${TGT_DIR}" "${SED_CMDS}" "${CLASS_CS}->${NEW_CLASS_CS},${CSPROJ}->${NEW_CSPROJ}"
+
+updateFile "${SRC_DIR}/${CLASS_CS}" "${SED_CMDS}"
+
+rename "${SRC_DIR}/${CLASS_CS}" "${SRC_DIR}/${NEW_CLASS_CS}"
+rename "${SRC_DIR}/${CSPROJ}" "${SRC_DIR}/${NEW_CSPROJ}"
+rename "${SRC_DIR}" "${TGT_DIR}"
+
+# tests/Calc.Test
+TO_TEST="${TARGET}.Test"
+FROM_TEST="${FROM}.Test"
+
+SRC_DIR="tests/${FROM_TEST}"
+TGT_DIR="tests/${TO_TEST}"
+SED_CMDS="s/${FROM}/${TO}/g"
+
+TESTS_CS="${FROM}Tests.cs"
+NEW_TESTS_CS="${TARGET}Tests.cs"
+CSPROJ="${FROM_TEST}.csproj"
+NEW_CSPROJ="${TO_TEST}.csproj"
+
+showUpdateParams "${SRC_DIR}" "${TGT_DIR}" "${SED_CMDS}" "${TESTS_CS}->${NEW_TESTS_CS},${CSPROJ}->${NEW_CSPROJ}"
+
+updateFile "${SRC_DIR}/${TESTS_CS}" "${SED_CMDS}"
+updateFile "${SRC_DIR}/${CSPROJ}" "${SED_CMDS}"
+
+rename "${SRC_DIR}/${TESTS_CS}" "${SRC_DIR}/${NEW_TESTS_CS}"
+rename "${SRC_DIR}/${CSPROJ}" "${SRC_DIR}/${NEW_CSPROJ}"
+rename "${SRC_DIR}" "${TGT_DIR}"
+
+# calc2.sln
+SLN="calc2.sln"
+NEW_SLN="${TO}.sln"
+
+SED_CMDS="s/${FROM}/${TO}/g"
+
+showUpdateParams "${FROM}" "${TO}" "${SED_CMDS}" "${SLN}->${NEW_SLN}"
+
+updateFile "${SLN}" "${SED_CMDS}"
+
+rename "${SLN}" "${NEW_SLN}"
+
+# Makefile
+MAKEFILE="Makefile"
+
+SED_CMDS="s/${FROM}/${TO}/g"
+
+showUpdateParams "${FROM}" "${TO}" "${SED_CMDS}" "Makefile"
+
+updateFile "${MAKEFILE}" "${SED_CMDS}"
+
+# .vscode/{launch.json,tasks.json}
+LAUNCH_JSON=".vscode/launch.json"
+TASKS_JSON=".vscode/tasks.json"
+
+showUpdateParams "${FROM}" "${TO}" "${SED_CMDS}" "${LAUNCH_JSON},${TASKS_JSON}"
+
+updateFile "${LAUNCH_JSON}" "${SED_CMDS}"
+updateFile "${TASKS_JSON}" "${SED_CMDS}"
+
+# git setup 2
+
+startStage "Git finalisation"
+
+(
+    cd ${TARGET}
+    git add .
+    git commit -m "Copied from template to '${REPO_NAME}'"
+)
+
+# Done
+
+echo "  New repo '${TARGET}' created from template"
