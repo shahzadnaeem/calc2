@@ -22,6 +22,8 @@ public class AClass
 
     public override string ToString()
     {
-        return String.Format("Calc(Name={0},Id={1},AutoId={2})", Name, Id, AutoId);
+        var className = typeof(AClass).Name;
+
+        return String.Format($"class {className}: (Name={Name},Id={Id},AutoId={AutoId})");
     }
 }
