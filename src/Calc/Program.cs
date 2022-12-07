@@ -20,7 +20,16 @@ do
         try
         {
             var parsed = ExpressionParser.ParseExpression(line);
+
+            var visitor = new LambdaVisitor(parsed, new List<string>());
+            Console.WriteLine("Details:");
+            visitor.Visit("> ");
+            Console.WriteLine(visitor.ToString());
+            Console.WriteLine();
+
             var result = roundToZero(parsed.Compile()());
+
+            Console.WriteLine("Result:");
             if (result != Math.Floor(result))
             {
                 Console.WriteLine("({0})() = {1:G}", parsed, result);
